@@ -353,9 +353,11 @@ class EMail {
 
 <?php
 $mail = new EMail();
+//$mail->setTo("create@philipjordandesign.com");
 $mail->setTo("coffbr01@gmail.com");
-$mail->setSubject("subject of the email");
-$mail->setMessage("the message of the email");
+$mail->setFrom("coffbr01@gmail.com");
+$mail->setSubject("Think I got it working ...");
+$mail->setMessage("You should see a PDF as an attachment");
 $mail->setAttachName($_FILES["fileInput"]["name"]);
 $mail->setAttachFileName($_FILES["fileInput"]["tmp_name"]);
 $mail->SendMail();
