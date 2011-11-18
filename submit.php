@@ -1,4 +1,4 @@
-<?php   
+<?php
 
 /*   
 Usage   
@@ -19,8 +19,7 @@ Usage
 This function returns an array of 2 elements which e[0] = true (on success) or false and e[1] = message
 */
 
-class EMail
-{
+class EMail {
     var $to;
     var $from;
     var $cc;
@@ -32,8 +31,7 @@ class EMail
     var $message;
     var $attach_file_name;
 
-    function EMail()
-    {
+    function EMail() {
         $this->to = "";
         $this->subject = "";
         $this->message = "";
@@ -75,34 +73,26 @@ class EMail
         $this->attach_file_name = $attachFileName;
     }
 
-    function makeFileName ($url)
-    {
+    function makeFileName ($url) {
         $pos=true;
         $PrePos=0;
-        while (!$pos==false)
-        {
+        while (!$pos==false) {
             $pos = strpos($url,'\\',$PrePos);
-            if ($pos===false)
-            {
+            if ($pos===false) {
                 $temp = substr($url,$PrePos);
             }
-            else
-            {
+            else {
                 $PrePos = $pos + 1;
             }
         }
         return $temp;
     }
 
-    function processAttachment()
-    {
-        if(is_array($this->attach_file_name))
-        {
+    function processAttachment() {
+        if(is_array($this->attach_file_name)) {
             $s = sizeof($this->attach_file_name);
-            for($i=0; $i<$s; $i++)
-            {
-                if($this->attach_file_name[$i] != "")
-                {
+            for($i=0; $i<$s; $i++) {
+                if($this->attach_file_name[$i] != "") {
                     $handle = fopen($this->attach_file_name[$i], 'rb');
                     $file_contents = fread($handle, filesize($this->attach_file_name[$i]));
                     $Attach['contents'][$i] = chunk_split(base64_encode($file_contents));
@@ -110,15 +100,12 @@ class EMail
                     $Attach['file_name'][$i] = $this->makeFileName ($this->attach_file_name[$i]);
                     $pos=true;
                     $PrePos=0;
-                    while (!$pos==false)
-                    {
+                    while (!$pos==false) {
                         $pos = strpos($this->attach_file_name[$i], '.', $PrePos);
-                        if ($pos===false)
-                        {
+                        if ($pos===false) {
                             $Attach['file_type'][$i] = substr($this->attach_file_name[$i], $PrePos);
                         }
-                        else
-                        {
+                        else {
                             $PrePos = $pos+1;
                         }
                     }
@@ -126,8 +113,7 @@ class EMail
             }
             return $Attach;
         }
-        else
-        {
+        else {
             $handle = fopen($this->attach_file_name, 'rb');
             $file_contents = fread($handle, filesize($this->attach_file_name));
             $Attach['contents'][0] = chunk_split(base64_encode($file_contents));
@@ -135,15 +121,12 @@ class EMail
             $Attach['file_name'][0] = $this->makeFileName ($this->attach_file_name);
             $pos=true;
             $PrePos=0;
-            while (!$pos==false)
-            {
+            while (!$pos==false) {
                 $pos = strpos($this->attach_file_name, '.', $PrePos);
-                if ($pos===false)
-                {
+                if ($pos===false) {
                     $Attach['file_type'][0] = substr($this->attach_file_name, $PrePos);
                 }
-                else
-                {
+                else {
                     $PrePos = $pos+1;
                 }
             }
@@ -151,131 +134,104 @@ class EMail
         return $Attach;
     }
 
-    function validateMailAddress($MAddress)
-    {
-        if (eregi("@", $MAddress) && eregi(".", $MAddress))
-        {
+    function validateMailAddress($MAddress) {
+        if (eregi("@", $MAddress) && eregi(".", $MAddress)) {
             return true;
         }
-        else
-        {
+        else {
             return false;
         }
     }
 
-    function Validate()
-    {
-        if(is_array($this->to))
-        {
+    function Validate() {
+        if(is_array($this->to)) {
             $msg[0] = false;
             $msg[1] = "You should provide only one receiver email address";
             return $msg;
         }
-        if(is_array($this->from))
-        {
+        if(is_array($this->from)) {
             $msg[0] = false;
             $msg[1] = "You should provide only one sender email address";
             return $msg;
         }
-        if($this->to == "")
-        {
+        if($this->to == "") {
             $msg[0] = false;
             $msg[1] = "You should provide a receiver email address";
             return $msg;
         }
-        if($this->subject == "")
-        {
+        if($this->subject == "") {
             $msg[0] = false;
             $msg[1] = "You should provide a subject for your email";
             return $msg;
         }
-        if($this->message == "")
-        {
+        if($this->message == "") {
             $msg[0] = false;
             $msg[1] = "You should provide message for your email";
             return $msg;
         }
-        if(!$this->validateMailAddress($this->to))
-        {
+        if(!$this->validateMailAddress($this->to)) {
             $msg[0] = false;
             $msg[1] = "Receiver E-Mail Address is not valid";
             return $msg;
         }
-        if(!$this->validateMailAddress($this->from))
-        {
+        if(!$this->validateMailAddress($this->from)) {
             $msg[0] = false;
             $msg[1] = "Sender E-Mail Address is not valid";
             return $msg;
         }
-        if(is_array($this->cc))
-        {
+        if(is_array($this->cc)) {
             $s = sizeof($this->cc);
-            for($i=0; $i<$s; $i++)
-            {
-                if(!$this->validateMailAddress($this->cc[$i]) && $this->cc[$i] != "")
-                {
+            for($i=0; $i<$s; $i++) {
+                if(!$this->validateMailAddress($this->cc[$i]) && $this->cc[$i] != "") {
                     $msg[0] = false;
                     $msg[1] = $this->cc[$i] . " is not a valid E-Mail Address";
                     return $msg;
                 }
             }
         }
-        else
-        {
-            if(!$this->validateMailAddress($this->cc) && $this->cc[$i] != "")
-            {
+        else {
+            if(!$this->validateMailAddress($this->cc) && $this->cc[$i] != "") {
                 $msg[0] = false;
                 $msg[1] = "CC E-Mail Address is not valid";
                 return $msg;
             }
         }
-        if(is_array($this->bcc))
-        {
+        if(is_array($this->bcc)) {
             $s = sizeof($this->bcc);
-            for($i=0; $i<$s; $i++)
-            {
-                if(!$this->validateMailAddress($this->bcc[$i]) && $this->bcc[$i] != "")
-                {
+            for($i=0; $i<$s; $i++) {
+                if(!$this->validateMailAddress($this->bcc[$i]) && $this->bcc[$i] != "") {
                     $msg[0] = false;
                     $msg[1] = $this->bcc[$i] . " is not a valid E-Mail Address";
                     return $msg;
                 }
             }
         }
-        else
-        {
-            if(!$this->validateMailAddress($this->bcc) && $this->bcc[$i] != "")
-            {
+        else {
+            if(!$this->validateMailAddress($this->bcc) && $this->bcc[$i] != "") {
                 $msg[0] = false;
                 $msg[1] = "BCC E-Mail Address is not valid";
                 return $msg;
             }
         }
-        if(is_array($this->reply_to))
-        {
+        if(is_array($this->reply_to)) {
             $msg[0] = false;
             $msg[1] = "You should provide only one Reply-to address";
             return $msg;
         }
-        else
-        {
-            if(!$this->validateMailAddress($this->reply_to))
-            {
+        else {
+            if(!$this->validateMailAddress($this->reply_to)) {
                 $msg[0] = false;
                 $msg[1] = "Reply-to E-Mail Address is not valid";
                 return $msg;
             }
         }
-        if(is_array($this->return_path))
-        {
+        if(is_array($this->return_path)) {
             $msg[0] = false;
             $msg[1] = "You should provide only one Return-Path address";
             return $msg;
         }
-        else
-        {
-            if(!$this->validateMailAddress($this->return_path))
-            {
+        else {
+            if(!$this->validateMailAddress($this->return_path)) {
                 $msg[0] = false;
                 $msg[1] = "Return-Path E-Mail Address is not valid";
                 return $msg;
@@ -285,11 +241,9 @@ class EMail
         return $msg;
     }
 
-    function SendMail()
-    {
+    function SendMail() {
         $mess = $this->Validate();
-        if(!$mess[0])
-        {
+        if(!$mess[0]) {
             return $mess;
         }
 
@@ -297,24 +251,22 @@ class EMail
         $headers  = "From: " . $this->from . "\r\n";
         $headers .= "To: <" . $this->to . ">\r\n";
 
-        if(is_array($this->cc))
-        {
+        if(is_array($this->cc)) {
             $headers .= "Cc: " . implode(", ", $this->cc) . "\r\n";
         }
-        else
-        {
-            if($this->cc != "")
+        else {
+            if($this->cc != "") {
                 $headers .= "Cc: " . $this->cc . "\r\n";
+            }
         }
 
-        if(is_array($this->bcc))
-        {
+        if(is_array($this->bcc)) {
             $headers .= "BCc: " . implode(", ", $this->bcc) . "\r\n";
         }
-        else
-        {
-            if($this->bcc != "")
+        else {
+            if($this->bcc != "") {
                 $headers .= "BCc: " . $this->bcc . "\r\n";
+            }
         }
 
         // these two to set reply address
@@ -350,26 +302,21 @@ class EMail
         $msg .= "--AttachMail7890123--\r\n";
 
 
-        if($this->attach_file_name != "" || is_array($this->attach_file_name))
-        {
+        if($this->attach_file_name != "" || is_array($this->attach_file_name)) {
             $Attach = $this->processAttachment();
 
             $s = sizeof($Attach['file_name']);
-            for($i=0; $i<$s; $i++)
-            {
+            for($i=0; $i<$s; $i++) {
                 # Start of Attachment chunk
                 $msg .= "--AttachMail0123456\r\n";
 
-                if ($Attach['file_type'][$i]=="gif")
-                {
+                if ($Attach['file_type'][$i]=="gif") {
                     $msg .= "Content-Type: image/gif; name=" . $Attach['file_name'][$i] . "\r\n";
                 }
-                elseif ($Attach['file_type'][$i]=="jpg" || $Attach['file_type'][$i]=="jpeg")
-                {
+                elseif ($Attach['file_type'][$i]=="jpg" || $Attach['file_type'][$i]=="jpeg") {
                     $msg .= "Content-Type: image/jpeg; name=" . $Attach['file_name'][$i] . "\r\n";
                 }
-                else
-                {
+                else {
                     $msg .= "Content-Type: application/file; name=" . $Attach['file_name'][$i] . "\r\n";
                 }
 
@@ -383,13 +330,11 @@ class EMail
         $msg .= "--AttachMail0123456--";
 
         $result = mail($this->to, $this->subject, $msg, $headers);
-        if ($result)
-        {
+        if ($result) {
             $mess[0] = true;
             $mess[1] = "Mail Successfully delivered";
         }
-        else
-        {
+        else {
             $mess[0] = false;       
             $mess[1] = "Mail can not be send this time. Please try latter.";
         }
@@ -397,7 +342,6 @@ class EMail
     }
 }
 ?>
-
 
 <?php
 $mail = new EMail();
