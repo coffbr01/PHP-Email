@@ -315,19 +315,10 @@ class EMail {
                 # Start of Attachment chunk
                 $msg .= "--AttachMail0123456\r\n";
 
-                if ($Attach['file_type'][$i]=="pdf") {
-                    $msg .= "Content-Type: application/pdf; name=" . $Attach['file_name'][$i] . "\r\n";
-                }
-                elseif ($Attach['file_type'][$i]=="gif") {
-                    $msg .= "Content-Type: image/gif; name=" . $Attach['file_name'][$i] . "\r\n";
-                }
-                elseif ($Attach['file_type'][$i]=="jpg" || $Attach['file_type'][$i]=="jpeg") {
-                    $msg .= "Content-Type: image/jpeg; name=" . $Attach['file_name'][$i] . "\r\n";
-                }
-                else {
-                    $msg .= "Content-Type: application/file; name=" . $Attach['file_name'][$i] . "\r\n";
-                }
+                // This API is deprecated ... might need to switch it in the future.
+                $mimeType = mime_content_type($Attach['file_name']);
 
+                $msg .= "Content-Type: " . $mimeType . "; name=" . $Attach['file_name'][$i] . "\r\n";
                 $msg .= "Content-Transfer-Encoding: base64\r\n";
                 $msg .= "Content-Disposition: attachment; filename=" . $Attach['file_name'][$i] . "\r\n\r\n";
 
