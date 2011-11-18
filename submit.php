@@ -12,7 +12,8 @@ Usage
     set $this->reply_to (Optional)
     set $this->return_path (Optional)
     set $this->x_mailer (Optional)
-    set $this->attach_file_name (this can be an array or a variable) (Optional)
+    set $this->attach_name (this can be an array or a variable) (Optional)
+    set $this->attach_file_name (this can be an array or a variable, must correspond to attach_name) (Optional)
 
     $this->SendMail();
 
@@ -41,6 +42,7 @@ class EMail {
         $this->reply_to = $this->from;
         $this->return_path = $this->from;
         $this->x_mailer = "PHP v" . phpversion();
+        $this->attach_name = "";
         $this->attach_file_name = "";
     }
 
@@ -72,6 +74,9 @@ class EMail {
     function setAttachFileName($attachFileName) {
         $this->attach_file_name = $attachFileName;
     }
+    function setAttachName($attachName) {
+        $this->attach_name = $attachName;
+    }
 
     function makeFileName ($url) {
         $pos=true;
@@ -97,7 +102,7 @@ class EMail {
                     $file_contents = fread($handle, filesize($this->attach_file_name[$i]));
                     $Attach['contents'][$i] = chunk_split(base64_encode($file_contents));
                     fclose($handle);
-                    $Attach['file_name'][$i] = $this->makeFileName ($this->attach_file_name[$i]);
+                    $Attach['file_name'][$i] = $this->makeFileName ($this->attach_name[$i]);
                     $pos=true;
                     $PrePos=0;
                     while (!$pos==false) {
@@ -118,7 +123,7 @@ class EMail {
             $file_contents = fread($handle, filesize($this->attach_file_name));
             $Attach['contents'][0] = chunk_split(base64_encode($file_contents));
             fclose($handle);
-            $Attach['file_name'][0] = $this->makeFileName ($this->attach_file_name);
+            $Attach['file_name'][0] = $this->makeFileName ($this->attach_name);
             $pos=true;
             $PrePos=0;
             while (!$pos==false) {
@@ -310,7 +315,10 @@ class EMail {
                 # Start of Attachment chunk
                 $msg .= "--AttachMail0123456\r\n";
 
-                if ($Attach['file_type'][$i]=="gif") {
+                if ($Attach['file_type'][$i]=="pdf") {
+                    $msg .= "Content-Type: application/pdf; name=" . $Attach['file_name'][$i] . "\r\n";
+                }
+                elseif ($Attach['file_type'][$i]=="gif") {
                     $msg .= "Content-Type: image/gif; name=" . $Attach['file_name'][$i] . "\r\n";
                 }
                 elseif ($Attach['file_type'][$i]=="jpg" || $Attach['file_type'][$i]=="jpeg") {
@@ -348,6 +356,7 @@ $mail = new EMail();
 $mail->setTo("coffbr01@gmail.com");
 $mail->setSubject("subject of the email");
 $mail->setMessage("the message of the email");
+$mail->setAttachName($_FILES["fileInput"]["name"]);
 $mail->setAttachFileName($_FILES["fileInput"]["tmp_name"]);
 $mail->SendMail();
 ?>
