@@ -1,8 +1,10 @@
 <?php
+include "email.php";
+
 // Configuration: Modify these variables
 
 $thankyou_url = "thankyou.html";
-$to = "philj21@yahoo.com, jason@snobar.com, dorian@snobar.com, lisa@snobar.com";
+$to = ["philj21@yahoo.com", "jason@snobar.com", "dorian@snobar.com", "lisa@snobar.com"];
 $subject = "RoofClamp SNOBAR System Form";                                                    
 
 // End Configuration                              
@@ -64,12 +66,17 @@ Area 8 	Pitch: " . $_POST['slope8'] . "
 			LF: " . $_POST['linealfeet8'] . "
 I Have Read the Design Considerations:      " . $_POST['agree'] . "\n";
 
-$from = "From: " . $_POST['email'];
+$mail = new Email();
+$mail->setTo($to);
+$mail->setFrom($_POST['email']);
+$mail->setSubject($subject);
+$mail->setMessage($body);
+$mail->setAttachName($_FILES["fileInput"]["name"]);
+$mail->setAttachFileName($_FILES["fileInput"]["tmp_name"]);
+$result = $mail->SendMail();
 
-if (eregi("^From: .+$",$from)) {
-	mail($to,$subject,$body,$from); 
-}                      
 header("HTTP/1.1 302 Found");
 header ("Location: $thankyou_url");
 exit;
+
 ?>
