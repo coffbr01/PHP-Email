@@ -1,4 +1,5 @@
 <?php
+include "mimetype.php";
 
 /*   
 Usage   
@@ -315,8 +316,8 @@ class EMail {
                 # Start of Attachment chunk
                 $msg .= "--AttachMail0123456\r\n";
 
-                // This API is deprecated ... might need to switch it in the future.
-                $mimeType = mime_content_type($Attach['file_name']);
+                $mimeHelper = new MimeType();
+                $mimeType = $mimeHelper->getMimeType($Attach['file_name']);
 
                 $msg .= "Content-Type: " . $mimeType . "; name=" . $Attach['file_name'][$i] . "\r\n";
                 $msg .= "Content-Transfer-Encoding: base64\r\n";
