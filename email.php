@@ -196,7 +196,7 @@ class EMail {
             }
         }
         else {
-            if(!$this->validateMailAddress($this->cc) && $this->cc[$i] != "") {
+            if(!$this->validateMailAddress($this->cc) && $this->cc != "") {
                 $msg[0] = false;
                 $msg[1] = "CC E-Mail Address is not valid";
                 return $msg;
@@ -213,7 +213,7 @@ class EMail {
             }
         }
         else {
-            if(!$this->validateMailAddress($this->bcc) && $this->bcc[$i] != "") {
+            if(!$this->validateMailAddress($this->bcc) && $this->bcc != "") {
                 $msg[0] = false;
                 $msg[1] = "BCC E-Mail Address is not valid";
                 return $msg;
@@ -317,7 +317,7 @@ class EMail {
                 $msg .= "--AttachMail0123456\r\n";
 
                 $mimeHelper = new MimeType();
-                $mimeType = $mimeHelper->getMimeType($Attach['file_name'][i]);
+                $mimeType = $mimeHelper->getMimeType($Attach['file_name'][$i]);
 
                 $msg .= "Content-Type: " . $mimeType . "; name=" . $Attach['file_name'][$i] . "\r\n";
                 $msg .= "Content-Transfer-Encoding: base64\r\n";
@@ -332,11 +332,11 @@ class EMail {
         $result = mail($this->to, $this->subject, $msg, $headers);
         if ($result) {
             $mess[0] = true;
-            $mess[1] = "Mail Successfully delivered";
+            $mess[1] = "Mail successfully delivered.";
         }
         else {
             $mess[0] = false;       
-            $mess[1] = "Mail can not be send this time. Please try latter.";
+            $mess[1] = "Mail can not be sent this time. Please try later.";
         }
         return $mess;
     }
