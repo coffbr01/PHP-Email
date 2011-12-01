@@ -317,7 +317,7 @@ class EMail {
                 $msg .= "--AttachMail0123456\r\n";
 
                 $mimeHelper = new MimeType();
-                $mimeType = $mimeHelper->getMimeType($Attach['file_name']);
+                $mimeType = $mimeHelper->getMimeType($Attach['file_name'][i]);
 
                 $msg .= "Content-Type: " . $mimeType . "; name=" . $Attach['file_name'][$i] . "\r\n";
                 $msg .= "Content-Transfer-Encoding: base64\r\n";
